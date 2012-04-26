@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Camelcode by analytically</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/analytically/camelcode">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/analytically/camelcode/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/analytically/camelcode/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Camelcode</h1>
+          <p>A tech demo built on top of Play Framework 2.0 that imports the CodePoint Open UK postcode dataset and offers a Geocoding RESTful API and a postcode map.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/analytically">analytically</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p>A tech demo built on top of <a href="http://www.playframework.org/">Play Framework 2.0</a> that imports the
+<a href="https://www.ordnancesurvey.co.uk/opendatadownload/products.html">CodePoint Open</a> UK postcode dataset
+and offers a Geocoding RESTful API and a map. It also demonstrates how
+<a href="http://code.google.com/p/google-guice/">Google Guice</a> can be integrated in a Play 2.0 application.</p>
+
+<p>Prerequisites: <a href="http://www.mongodb.org/">MongoDB</a> and <a href="http://www.playframework.org/">Play Framework 2.0</a>.</p>
+
+<h3>Setup</h3>
+
+<p>Edit <code>conf/application.conf</code> and point it to a MongoDB installation, and execute</p>
+
+<pre><code>play run
+</code></pre>
+
+<p>Then put the <a href="https://www.ordnancesurvey.co.uk/opendatadownload/products.html">CodePoint Open CSVs</a> (scroll halfway down, 20mb)
+in the <code>codepointopen</code> directory.</p>
+
+<p>After they are processed, they will be moved to the <code>codepointopen/done</code> directory.</p>
+
+<p>Then visit <a href="http://localhost:9000/">http://localhost:9000/</a> and you should see the welcome screen.
+Visit <a href="http://localhost:9000/servermetrics">http://localhost:9000/servermetrics</a> for server metrics.</p>
+
+<h3>JSON</h3>
+
+<p>GET <a href="http://localhost:9000/latlng/BS106TF">http://localhost:9000/latlng/POSTCODE</a> to geocode a UK postcode. Response will be JSON:</p>
+
+<pre><code>{"latitude":51.505615,"longitude":-2.6120315}
+</code></pre>
+
+<h3>Technology</h3>
+
+<ul>
+<li>
+<a href="http://www.playframework.org/">Play Framework 2.0</a>, thank god for this!</li>
+<li>
+<a href="http://camel.apache.org/">Apache Camel</a> to <a href="https://github.com/analytically/camelcode/blob/master/app/Global.java#L103">process and monitor</a> the <code>codepointopen</code> directory and to tell the actors about the postcodes (split(body()))</li>
+<li>
+<a href="http://akka.io/">Akka 2.0</a> provides a nice concurrent model <a href="https://github.com/analytically/camelcode/blob/master/app/actors/ProcessCodePointOpenCsv.java">to process the 1.7 million postcodes</a> in under one minute on modern hardware</li>
+<li>
+<a href="http://www.geotools.org/">GeoTools 8</a> <a href="https://github.com/analytically/camelcode/blob/master/app/actors/ProcessCPOCsvEntry.java#L68">converts</a> the eastings/northings to latitude/longitude</li>
+<li>
+<a href="http://code.google.com/p/google-guice/">Guice</a> for <a href="https://github.com/analytically/camelcode/blob/master/app/Global.java#L53">Dependency Injection</a> (not too much to inject yet though)</li>
+<li>
+<a href="https://github.com/codahale/metrics">Metrics</a> for metrics</li>
+<li>
+<a href="http://www.mongodb.org/">MongoDB</a> and <a href="http://code.google.com/p/morphia/">Morphia</a> as storage and ORM</li>
+<li>
+<a href="http://leaflet.cloudmade.com/">Leaflet</a> for the map</li>
+<li>
+<a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> and <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a> for the UI</li>
+</ul><h3>License</h3>
+
+<p>Licensed under the <a href="http://en.wikipedia.org/wiki/WTFPL">WTFPL</a>.</p>
+
+<p>This data contains Ordnance Survey data © Crown copyright and database right 2011. Code-Point Open contains
+Royal Mail data © Royal Mail copyright and database right 2011. Code-Point Open and ONSPD contains National Statistics
+data © Crown copyright and database right 2011.</p>
+
+<p>OS data may be used under the terms of the <a href="http://www.ordnancesurvey.co.uk/oswebsite/docs/licences/os-opendata-licence.pdf">OS OpenData licence</a>.</p>
+
+<h3>Todo</h3>
+
+<ul>
+<li>Fix distance calculation, Morphia does't do geoNear yet (grmbl)</li>
+</ul><h3>Screenshots</h3>
+
+<p><img src="https://github.com/analytically/camelcode/raw/master/screenshot.png" alt="Welcome Page"></p>
+
+<p><img src="https://github.com/analytically/camelcode/raw/master/screenshot2.png" alt="Map"></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
